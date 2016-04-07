@@ -1,0 +1,99 @@
+<script>
+import  "./base.js";
+import {assign} from "lodash";
+</script>
+
+<template name="bs-modal-content" type="bs-modal-base">
+	<div class="modal-dialog{% if large %} modal-lg{% endif %}">
+		<div class="modal-content">
+			{% if form %}
+			<form on-keydown="confirm-on-enter" on-submit={"confirm",onconfirm} absorb-attrs={form}>
+				{% render "bs-modal-body" %}
+			</form>
+			{% else %}
+			{% render "bs-modal-body" %}
+			{% endif %}
+		</div>
+	</div>
+</template>
+
+<script>
+Template["bs-modal-content"].actions({
+	confirm: function(e, onconfirm) {
+		if (typeof onconfirm !== "function") return;
+		e.original.preventDefault();
+		onconfirm();
+	}
+});
+</script>
+
+<template name="bs-modal-body" type="bs-modal-base">
+	{% if header %}{% with header %}
+	{% render "bs-modal-header" %}
+	{% endwith %}{% endif %}
+
+	<div class="modal-body">
+		{% if contentTemplate %}
+		{% render contentTemplate %}
+		{% else if content %}
+		{{ content }}
+		{% endif %}
+	</div>
+
+	{% if footer %}{% with footer %}
+	{% render "bs-modal-footer" %}
+	{% endwith %}{% endif %}
+</template>
+
+<template name="bs-modal-header" type="bs-modal-base">
+	<div class="modal-header">
+		{% if close %}
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		{% endif %}
+
+		<h4 class="modal-title">{{ title }}</h4>
+	</div>
+</template>
+
+<template name="bs-modal-footer" type="bs-modal-base">
+	<div class="modal-footer">
+		{% if help %}
+		<span class="pull-left">{{ help }}</span>
+		{% endif %}
+
+		{% set closeData = closeBtnData(close) %}
+		{% if closeData %}{% with closeData %}
+		<button class="btn {{ className }}" data-dismiss="modal" absorb-attrs={this}>
+			{{ text }}
+		</button>
+		{% endwith %}{% endif %}
+
+		{% set confirmData = confirmBtnData(confirm) %}
+		{% if confirmData %}{% with confirmData %}
+		{% if form %}
+		<button type="submit" class="btn {{ className }}" absorb-attrs={this}>
+			{{ text }}
+		</button>
+		{% else %}
+		<button class="btn {{ className }}" on-click={"confirm",onconfirm} absorb-attrs={this}>
+			{{ text }}
+		</button>
+		{% endif %}
+		{% endwith %}{% endif %}
+	</div>
+</template>
+
+<script>
+Template["bs-modal-footer"].helpers({
+	closeBtnData: function(value) {
+		if (!value) return false;
+		if (typeof value === "string") value = { text: value };
+		return assign({ text: "Close", className: "btn-secondary" }, value);
+	},
+	confirmBtnData: function(value) {
+		if (!value) return false;
+		if (typeof value === "string") value = { text: value };
+		return assign({ text: "Confirm", className: "btn-success" }, value);
+	}
+});
+</script>
