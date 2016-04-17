@@ -28,9 +28,15 @@ export function create(data={}) {
 	let $el = comp.$el = jQuery(cont);
 	comp.container = cont;
 
-	comp.show = function(node) {
+	comp.appendTo = function(node) {
 		if (typeof node === "string") node = document.querySelector(node);
 		node.appendChild(cont);
+		return comp;
+	};
+
+	comp.show = function(node) {
+		if (node) comp.appendTo(node);
+		else if (!comp.container.parentNode) comp.appendTo("body");
 		$el.modal("show");
 		return comp;
 	};
