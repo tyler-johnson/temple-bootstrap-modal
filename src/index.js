@@ -12,7 +12,9 @@ export function createContainer(data={}) {
 	return cont;
 }
 
-export function create(data={}) {
+export function create(node, data={}) {
+	if (node && !node.nodeType) [data,node] = [node,null];
+
 	let cont = createContainer(data);
 	data = merge({
 		form: false,
@@ -57,12 +59,15 @@ export function create(data={}) {
 		if (data.destroyOnHide) comp.destroy();
 	});
 
+	if (node) comp.appendTo(node);
+
 	return comp;
 }
 
 export function open(node, data) {
-	let modal = create(data);
-	modal.show(node);
+	if (node && !node.nodeType) [data,node] = [node,null];
+	let modal = create(node, data);
+	modal.show();
 	return modal;
 }
 
