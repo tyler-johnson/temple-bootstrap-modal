@@ -15,6 +15,10 @@ export function createContainer(data={}) {
 export function create(node, data={}) {
 	if (node && !node.nodeType) [data,node] = [node,null];
 
+	function hide() {
+		$el.modal("hide");
+	}
+
 	let cont = createContainer(data);
 	data = merge({
 		form: false,
@@ -22,7 +26,9 @@ export function create(node, data={}) {
 		footer: true,
 		close: true,
 		confirm: false,
-		destroyOnHide: true
+		destroyOnHide: true,
+		hideOnConfirm: true,
+		invokeHide: hide
 	}, data);
 
 	let comp = Temple.paint("bs-modal-content", cont, data);
@@ -44,7 +50,7 @@ export function create(node, data={}) {
 	};
 
 	comp.hide = function() {
-		$el.modal("hide");
+		hide();
 		return comp;
 	};
 

@@ -27,7 +27,7 @@ test("removes modal on hide", (t) => {
 	t.plan(4);
 	let modal = BootstrapModal.open(document.body);
 	let el = modal.container;
-	t.ok(document.body.contains(el), "body does contains modal element");
+	t.ok(document.body.contains(el), "body does contain modal element");
 
 	modal.$el.on("shown.bs.modal", function() {
 		t.pass("opened the modal");
@@ -37,5 +37,21 @@ test("removes modal on hide", (t) => {
 	modal.$el.on("hidden.bs.modal", function() {
 		t.pass("hid the modal");
 		t.notOk(document.body.contains(el), "body does not contain modal element");
+	});
+});
+
+test("hides on confirm", (t) => {
+	t.plan(3);
+	let modal = BootstrapModal.open(document.body, { confirm: true });
+	let el = modal.container;
+	t.ok(document.body.contains(el), "body does contain modal element");
+
+	modal.$el.on("shown.bs.modal", function() {
+		t.pass("opened the modal");
+		modal.$el.find("button.btn-success").click();
+	});
+
+	modal.$el.on("hidden.bs.modal", function() {
+		t.pass("hid the modal");
 	});
 });
