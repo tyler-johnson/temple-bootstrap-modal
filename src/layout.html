@@ -20,9 +20,12 @@ import {assign} from "lodash";
 <script>
 Template["bs-modal-content"].actions({
 	confirm: function(e, onconfirm) {
-		if (typeof onconfirm !== "function") return;
 		e.original.preventDefault();
-		onconfirm();
+		if (typeof onconfirm === "function") onconfirm();
+
+		let hideOnConfirm = e.scope.lookup("hideOnConfirm");
+		let hide = e.scope.lookup("invokeHide");
+		if (hideOnConfirm && hide) hide();
 	}
 });
 </script>
